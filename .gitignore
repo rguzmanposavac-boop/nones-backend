@@ -1,1 +1,29 @@
-node_modules/ 
+# Dependencias
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cobertura
+coverage
+*.lcov
+.nyc_output
+
+# Builds
+dist
+build
+
+# Entornos
+.env
+.env.local
+.env.*.local
+
+# Otros
+.DS_Store
+.eslintcache
+.vscode/
