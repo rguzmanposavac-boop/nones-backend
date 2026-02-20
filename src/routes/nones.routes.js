@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importamos la mini "base de datos" en memoria
-const { findDeviceById } = require('../db/fakeDb');
+const { findDeviceById, findStatsByDeviceId } = require('../db/fakeDb');
 
 // Ruta de prueba inicial
 router.get('/', (req, res) => {
@@ -17,7 +17,7 @@ router.get('/status', (req, res) => {
   });
 });
 
-// Endpoint estilo NONES: check-premium leyendo de "fake DB"
+// Endpoint: validación de plan (similar a GET /check-premium/{device_id})
 router.get('/check-premium', (req, res) => {
   const deviceId = req.query.deviceId || 'demo-free';
 
@@ -35,6 +35,27 @@ router.get('/check-premium', (req, res) => {
     plan: device.plan,
     expiresAt: device.expiresAt,
     limitRules: device.limitRules
+  });
+});
+
+// Endpoint: estadísticas (similar a GET /stats/{device_id})
+router.get('/stats', (req, res) => {
+  const deviceId = req.query.deviceId || 'demo-free';
+
+  const stats = findStatsByDeviceId(deviceId);
+
+  if (!stats) {
+    return res.status(404).json({
+      error: 'stats_not_found',
+      message: `No se encontraron estadísticas para el dispositivo ${deviceId}`
+    });
+  }
+
+  res.json({
+    deviceId: stats.deviceId,
+    todayBlocked: stats.todayBlocked,
+    monthBlocked: stats.monthBlocked,
+    byRuleType: stats.byRuleType
   });
 });
 
